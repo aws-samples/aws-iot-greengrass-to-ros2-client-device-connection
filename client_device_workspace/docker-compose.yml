@@ -1,0 +1,60 @@
+version: "3.9"
+services:
+  greengrass:
+    image: amazon/aws-iot-greengrass:latest
+    hostname: greengrass
+    env_file:
+      - greengrass.env
+    volumes:
+      - type: bind
+        source: ./greengrass
+        target: /greengrass
+        volume:
+          nocopy: true
+      - type: bind
+        source: ./greengrass-v2-credentials
+        target: /root/.aws/
+    ports:
+      - "8883:8883"
+    networks:
+      - aws
+      - ros
+  discovery:
+    image: ros:humble-ros-base
+    command: fastdds discovery --server-id 0
+    networks:
+      - ros
+  iot_pub:
+    depends_on:
+      - greengrass
+    build:
+      context: client_device
+      dockerfile: Dockerfile
+    volumes:
+      - type: bind
+        source: $CERT_FOLDER_LOCATION
+        target: /workspace/iot_certs_and_config
+    networks:
+      - ros
+      - aws_discovery
+    command: ros2 run telemetry_mqtt mqtt_telemetry_pub --ros-args --param path_for_config:=/workspace/iot_certs_and_config/iot_docker_config.json --param connection_retries:=10
+    environment:
+      ROS_DISCOVERY_SERVER: discovery:11811
+  mock_pub:
+    build:
+      context: client_device
+      dockerfile: Dockerfile
+    command: ros2 run telemetry_mqtt mock_telemetry_pub
+    environment:
+      ROS_DISCOVERY_SERVER: discovery:11811
+    networks:
+      - ros
+
+networks:
+  ros:
+    driver: bridge
+    internal: true
+  aws:
+    driver: bridge
+  aws_discovery:
+    driver: bridge
