@@ -37,7 +37,7 @@ services:
     networks:
       - ros
       - aws_discovery
-    command: ros2 run telemetry_mqtt mqtt_telemetry_pub --ros-args --param path_for_config:=/workspace/iot_certs_and_config/iot_docker_config.json --param connection_retries:=10
+    command: ros2 run telemetry_mqtt mqtt_telemetry_pub --ros-args --param path_for_config:=/workspace/iot_certs_and_config/iot_docker_config.json --param discover_endpoints:=true
     environment:
       ROS_DISCOVERY_SERVER: discovery:11811
   mock_pub:

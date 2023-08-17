@@ -1,0 +1,3 @@
+[submodule "client_device_workspace/client_device/aws-iot-robot-connectivity-samples-ros2"]
+	path = client_device_workspace/client_device/aws-iot-robot-connectivity-samples-ros2
+	url = https://github.com/aws-samples/aws-iot-robot-connectivity-samples-ros2
