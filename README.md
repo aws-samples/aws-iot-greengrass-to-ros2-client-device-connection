@@ -1,8 +1,5 @@
 # Connect ROS2 robots to AWS Greengrass v2 server as client devices
 
-## Blog
-More information on the sample application with ROS2 and AWS IoT use cases is present [in this blog](TODO).
-
 ## Sample application walkthough
 
 Learn how to use a Greengrass deployment as a gateway server, including client device authentication and MQTT broker features. Greengrass is configured to accept client device connections from ROS2 robots. This code was tested on an [Ubuntu 22.04](https://www.releases.ubuntu.com/22.04/) system on [ROS2 Humble](https://docs.ros.org/en/humble/index.html).
