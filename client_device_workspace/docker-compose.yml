@@ -1,7 +1,9 @@
 version: "3.9"
 services:
   greengrass:
-    image: amazon/aws-iot-greengrass:latest
+    build:
+      context: aws-greengrass-docker
+      dockerfile: Dockerfile
     hostname: greengrass
     env_file:
       - greengrass.env

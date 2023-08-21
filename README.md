@@ -25,7 +25,9 @@ This setup is to demonstrate the use of Greengrass on a hub device allowing conn
 
 The lower left robots represent the client devices that are connecting to a central gateway. The gateway has software deployed to it using Greengrass, and bridges the connection between the robots and the cloud.
 
-To use Docker, follow the installation instructions found [here](https://docs.docker.com/engine/install/ubuntu/). Docker Compose is also used, which can be installed as follows:
+To use Docker, follow the installation instructions found [here](https://docs.docker.com/engine/install/ubuntu/). Docker must be run without `sudo` to make sure that environment variables are used correctly, so ensure to follow the [Linux postinstall](https://docs.docker.com/engine/install/linux-postinstall/) steps from the previous link.
+
+Docker Compose is also used, which can be installed as follows:
 
 ```bash
 sudo apt install -y docker-compose
