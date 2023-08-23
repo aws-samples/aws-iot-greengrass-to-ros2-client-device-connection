@@ -1,0 +1,20 @@
+{
+    "aws.greengrass.Nucleus": {
+        "componentVersion": "2.9.5"
+    },
+    "aws.greengrass.clientdevices.Auth": {
+        "componentVersion": "2.3.2",
+        "configurationUpdate": {
+            "merge": "UNKNOWN"
+        }
+    },
+    "aws.greengrass.clientdevices.mqtt.Moquette": {
+        "componentVersion": "2.3.1"
+    },
+    "aws.greengrass.clientdevices.mqtt.Bridge": {
+        "componentVersion": "2.2.4",
+        "configurationUpdate": {
+            "merge": "{\"mqttTopicMapping\": {\"ForwardAllMapping\": {\"topic\": \"MY_TOPIC\",\"source\": \"LocalMqtt\",\"target\": \"IotCore\"} } }"
+        }
+    }
+}
