@@ -193,7 +193,7 @@ In this list, two of the components require configuration. The client device con
 }
 ```
 
-This template allows Things matching the selection rule to connect, publish, and subscribe to all topics. The topic is restricted further by the MQTT permissions. If more than one client device is required, use OR to join them together; for example, `ThingName1 OR ThingName2 OR ThingName3`.
+This template allows Things matching the selection rule to connect, publish, and subscribe to all topics. The topic is restricted further by the MQTT permissions. If more than one client device is required, use OR to join them together; for example, `ThingName1 OR ThingName2 OR ThingName3`. Information on more restrictive access control can be found [here](https://docs.aws.amazon.com/greengrass/v2/developerguide/client-device-auth-component.html#client-device-auth-component-configuration), if your use case requires it.
 
 The template should be copied from this file or from `templates/client_device_auth_template.json` into `$CERT_FOLDER_LOCATION/client_device_auth.json`. Following this, the UNKNOWN value should be updated with the IoT Thing name. This can be accomplished with the following:
 
