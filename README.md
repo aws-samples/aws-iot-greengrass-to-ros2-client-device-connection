@@ -27,10 +27,10 @@ The lower left robots represent the client devices that are connecting to a cent
 
 To use Docker, follow the installation instructions found [here](https://docs.docker.com/engine/install/ubuntu/). Docker must be run without `sudo` to make sure that environment variables are used correctly, so ensure to follow the [Linux postinstall](https://docs.docker.com/engine/install/linux-postinstall/) steps from the previous link.
 
-Docker Compose is also used, which can be installed as follows:
+Docker Compose and `jq` are also used, which can be installed as follows:
 
 ```bash
-sudo apt install -y docker-compose
+sudo apt install -y docker-compose jq
 ```
 
 Clone the repository into the home directory as follows:
@@ -236,6 +236,7 @@ Here, the UNKOWN value of the Client Device Auth component must be updated with 
 export TOPIC_NAME=ros2_mock_telemetry_topic
 # Use jq to serialize JSON, then remove start quote, then end quote, then newline chars, then multiple spaces in a row. Then double-escape quotes for re-inserting into file.
 export GG_AUTH_CONFIG=$(jq -Rs '.' "$CLIENT_DEVICE_AUTH_FILE" | sed 's/^"//' | sed 's/"$//' | sed 's/\\n//g' | sed -r 's/\s+/ /g' | sed 's/\\"/\\\\"/g')
+echo "Greengrass Auth config: $GG_AUTH_CONFIG"
 
 export DEPLOYMENT_CONFIG_TEMPLATE="$REPO/templates/greengrass_deployment_config_template.json"
 export DEPLOYMENT_CONFIG_FILE="$REPO/client_device_workspace/greengrass_deployment_config.json"
