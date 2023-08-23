@@ -320,6 +320,14 @@ The client device is now allowed to discover the Greengrass device, but is not y
 aws greengrassv2 batch-associate-client-device-with-core-device --core-device-thing-name $GG_THING_NAME --entries thingName=$THING_NAME
 ```
 
+This command should return an empty list of errors, meaning that no errors occurred, as follows:
+
+```
+{
+  "errorEntries": []
+}
+```
+
 #### Configure MQTT Broker Endpoint
 
 To perform discovery, the client device will interrogate Greengrass for the MQTT broker endpoint address. In our case, this will be the `greengrass` hostname because the docker networks are set up to allow this direct connection. It is also possible to set the public IP of the Greengrass host, but in this case port 8883 must be allowed through the firewall.
