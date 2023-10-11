@@ -36,8 +36,8 @@ sudo apt install -y docker-compose jq
 Clone the repository into the home directory as follows:
 
 ```bash
-export REPO="$HOME/git/aws-iot-greengrass-client-devices-ros2"
-git clone --recurse-submodules https://github.com/aws-samples/aws-iot-greengrass-client-devices-ros2.git $REPO
+export REPO="$HOME/git/aws-iot-greengrass-to-ros2-client-device-connection"
+git clone --recurse-submodules https://github.com/aws-samples/aws-iot-greengrass-to-ros2-client-device-connection.git $REPO
 ```
 
 Once this is complete, a new configuration file must be created similar to the previous IoT config file. Execute the following steps:
