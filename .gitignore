@@ -2,4 +2,4 @@
 **/greengrass-v2-credentials
 client_device_workspace/greengrass_deployment_config.json
 client_device_workspace/greengrass.env
-
+.DS_Store

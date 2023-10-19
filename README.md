@@ -383,6 +383,45 @@ There are also 3 networks:
 3. `aws_discover`: network allowing `iot_pub` container to discover Greengrass device. This is
    not required once discovery is complete.
 
+### Automate Robots onboarding to AWS IoT at scale
+New robots must be provisioned in order to discover the GreenGrass server. Provisioning is the process of providing robots with unique identities (e.g., an X.509 certificate and a private key), registering these identities with the AWS IoT endpoint, and adding required IoT permissions so that robots may securely connect and function.
+![fleet_provisioning](images/fleet_provisioning.png)
+
+We going to use AWS IoT fleet provisioning, [Provisioning by claim](https://docs.aws.amazon.com/iot/latest/developerguide/provision-wo-cert.html) to automate and scale the process of registering robot identities with the AWS Cloud and associating the required AWS IoT permissions.
+
+#### Create the Provisioning Template
+For using the Fleet Provisioning feature of AWS IoT Core, you need to setup an IAM role and a Provisioning Template in your AWS account.
+1. Create an IAM role that will be needed by a fleet provisioning template
+``` bash
+ROLE=$(aws iam create-role \
+      --role-name provision-by-claim-role \
+      --assume-role-policy-document file://client_device_provisioning/provision_by_claim_role_trust_policy.json)
+PROVISION_ROLE_ARN=$(echo $ROLE | jq -r '.Role.Arn')
+```
+2. Attach a policy to the provision-by-claim-role role
+  ```bash
+aws iam attach-role-policy \
+    --role-name provision-by-claim-role \
+    --policy-arn arn:aws:iam::aws:policy/service-role/AWSIoTThingsRegistration
+aws iam attach-role-policy \
+    --role-name provision-by-claim-role \
+    --policy-arn arn:aws:iam::aws:policy/service-role/AWSIoTLogging
+  ```
+
+3. Create the provisioniong template
+```bash
+aws iot create-provisioning-template \
+    --template-name robot-gg-server-template \
+    --provisioning-role-arn $PROVISION_ROLE_ARN \
+    --template-body file://client_device_provisioning/gg_server_template.json \
+    --enabled
+```   
+
+#### Create the Claim Certificate
+#### Provision the Robot
+#### Connect the Robot to the GG Server
+
+
 ## Conclusion
 
 Your ROS2 robot can now automatically discover the Greengrass server to allow a local connection instead of communicating directly to the cloud. This server could be extended to forward logs and metrics, or allow local shadow communication without a public network connection, by deploying additional Greengrass components.
