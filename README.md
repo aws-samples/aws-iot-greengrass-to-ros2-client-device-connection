@@ -403,7 +403,7 @@ New robots must be provisioned in order to discover the GreenGrass server. Provi
 We going to use AWS IoT fleet provisioning, [Provisioning by claim](https://docs.aws.amazon.com/iot/latest/developerguide/provision-wo-cert.html) to automate and scale the process of registering robot identities with the AWS Cloud and associating the required AWS IoT permissions.
 
 #### Create the Provisioning Template
-For using the Fleet Provisioning feature of AWS IoT Core, you need to setup an IAM role and a Provisioning Template in your AWS account.
+For using the fleet provisioning feature of AWS IoT Core, you need to setup an IAM role and a provisioning template in your AWS account.
 1. Create an IAM role that will be needed by a fleet provisioning template
 ``` bash
 ROLE=$(aws iam create-role \
@@ -431,6 +431,27 @@ aws iot create-provisioning-template \
 ```   
 
 #### Create the Claim Certificate
+1. Create a claim certificate and private key to use for the provisioning by claim workflow
+```bash
+mkdir client_device_provisioning/claim
+CLAIM_CERTIFICATE=$(aws iot create-keys-and-certificate \
+    --certificate-pem-outfile "client_device_provisioning/claim/certificate.pem" \
+    --public-key-outfile "client_device_provisioning/claim/publicKey.pem" \
+    --private-key-outfile "client_device_provisioning/claim/privateKey.pem" \
+    --set-as-active)
+CLAIM_CERTIFICATE_ARN=$(echo -E $CLAIM_CERTIFICATE |  jq -r '.certificateArn')
+```
+2. Create an IoT policy and attached it to the claim certificate
+```bash
+aws iot create-policy \
+    --policy-name robot-gg-server-claim-policy \
+    --policy-document file://client_device_provisioning/claim-policy.json
+
+aws iot attach-policy \
+    --target $CLAIM_CERTIFICATE_ARN \
+    --policy-name robot-gg-server-claim-policy
+```
+
 #### Provision the Robot
 #### Connect the Robot to the GG Server
 
