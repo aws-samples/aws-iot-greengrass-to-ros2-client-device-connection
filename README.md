@@ -417,7 +417,6 @@ There are also 3 networks:
 3. `aws_discover`: network allowing `iot_pub` container to discover Greengrass device. This is
    not required once discovery is complete.
 
-<<<<<<< HEAD
 ### Automate Robots onboarding to AWS IoT at scale
 New robots must be provisioned in order to discover the GreenGrass server. Provisioning is the process of providing robots with unique identities (e.g., an X.509 certificate and a private key), registering these identities with the AWS IoT endpoint, and adding required IoT permissions so that robots may securely connect and function.
 ![fleet_provisioning](images/fleet_provisioning.png)
@@ -457,8 +456,6 @@ aws iot create-provisioning-template \
 #### Connect the Robot to the GG Server
 
 
-=======
->>>>>>> main
 ## Conclusion
 
 Your ROS2 robot can now automatically discover the Greengrass server to allow a local connection instead of communicating directly to the cloud. This server could be extended to forward logs and metrics, or allow local shadow communication without a public network connection, by deploying additional Greengrass components.
