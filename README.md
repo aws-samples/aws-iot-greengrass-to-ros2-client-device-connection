@@ -27,17 +27,29 @@ The lower left robots represent the client devices that are connecting to a cent
 
 To use Docker, follow the installation instructions found [here](https://docs.docker.com/engine/install/ubuntu/). Docker must be run without `sudo` to make sure that environment variables are used correctly, so ensure to follow the [Linux postinstall](https://docs.docker.com/engine/install/linux-postinstall/) steps from the previous link.
 
+<<<<<<< HEAD
 Docker Compose is also used, which can be installed as follows:
 
 ```bash
 sudo apt install -y docker-compose
+=======
+Docker Compose and `jq` are also used, which can be installed as follows:
+
+```bash
+sudo apt install -y docker-compose jq
+>>>>>>> main
 ```
 
 Clone the repository into the home directory as follows:
 
 ```bash
+<<<<<<< HEAD
 export REPO="$HOME/git/aws-iot-greengrass-client-devices-ros2"
 git clone --recurse-submodules https://github.com/aws-samples/aws-iot-greengrass-client-devices-ros2.git $REPO
+=======
+export REPO="$HOME/git/aws-iot-greengrass-to-ros2-client-device-connection"
+git clone --recurse-submodules https://github.com/aws-samples/aws-iot-greengrass-to-ros2-client-device-connection.git $REPO
+>>>>>>> main
 ```
 
 Once this is complete, a new configuration file must be created similar to the previous IoT config file. Execute the following steps:
@@ -195,6 +207,13 @@ In this list, two of the components require configuration. The client device con
 
 This template allows Things matching the selection rule to connect, publish, and subscribe to all topics. The topic is restricted further by the MQTT permissions. If more than one client device is required, use OR to join them together; for example, `ThingName1 OR ThingName2 OR ThingName3`.
 
+<<<<<<< HEAD
+=======
+Information on more configuration options can be found [here](https://docs.aws.amazon.com/greengrass/v2/developerguide/client-device-auth-component.html#client-device-auth-component-configuration), which allows more restrictive access control depending on your use case.
+
+**NOTE: Here we allow all client devices and topics for demonstration purposes only; the policy should be updated for use in production per your functional and security requirements.**
+
+>>>>>>> main
 The template should be copied from this file or from `templates/client_device_auth_template.json` into `$CERT_FOLDER_LOCATION/client_device_auth.json`. Following this, the UNKNOWN value should be updated with the IoT Thing name. This can be accomplished with the following:
 
 ```bash
@@ -236,6 +255,10 @@ Here, the UNKOWN value of the Client Device Auth component must be updated with 
 export TOPIC_NAME=ros2_mock_telemetry_topic
 # Use jq to serialize JSON, then remove start quote, then end quote, then newline chars, then multiple spaces in a row. Then double-escape quotes for re-inserting into file.
 export GG_AUTH_CONFIG=$(jq -Rs '.' "$CLIENT_DEVICE_AUTH_FILE" | sed 's/^"//' | sed 's/"$//' | sed 's/\\n//g' | sed -r 's/\s+/ /g' | sed 's/\\"/\\\\"/g')
+<<<<<<< HEAD
+=======
+echo "Greengrass Auth config: $GG_AUTH_CONFIG"
+>>>>>>> main
 
 export DEPLOYMENT_CONFIG_TEMPLATE="$REPO/templates/greengrass_deployment_config_template.json"
 export DEPLOYMENT_CONFIG_FILE="$REPO/client_device_workspace/greengrass_deployment_config.json"
@@ -319,6 +342,17 @@ The client device is now allowed to discover the Greengrass device, but is not y
 aws greengrassv2 batch-associate-client-device-with-core-device --core-device-thing-name $GG_THING_NAME --entries thingName=$THING_NAME
 ```
 
+<<<<<<< HEAD
+=======
+This command should return an empty list of errors, meaning that no errors occurred, as follows:
+
+```
+{
+  "errorEntries": []
+}
+```
+
+>>>>>>> main
 #### Configure MQTT Broker Endpoint
 
 To perform discovery, the client device will interrogate Greengrass for the MQTT broker endpoint address. In our case, this will be the `greengrass` hostname because the docker networks are set up to allow this direct connection. It is also possible to set the public IP of the Greengrass host, but in this case port 8883 must be allowed through the firewall.
@@ -383,6 +417,7 @@ There are also 3 networks:
 3. `aws_discover`: network allowing `iot_pub` container to discover Greengrass device. This is
    not required once discovery is complete.
 
+<<<<<<< HEAD
 ### Automate Robots onboarding to AWS IoT at scale
 New robots must be provisioned in order to discover the GreenGrass server. Provisioning is the process of providing robots with unique identities (e.g., an X.509 certificate and a private key), registering these identities with the AWS IoT endpoint, and adding required IoT permissions so that robots may securely connect and function.
 ![fleet_provisioning](images/fleet_provisioning.png)
@@ -422,6 +457,8 @@ aws iot create-provisioning-template \
 #### Connect the Robot to the GG Server
 
 
+=======
+>>>>>>> main
 ## Conclusion
 
 Your ROS2 robot can now automatically discover the Greengrass server to allow a local connection instead of communicating directly to the cloud. This server could be extended to forward logs and metrics, or allow local shadow communication without a public network connection, by deploying additional Greengrass components.
