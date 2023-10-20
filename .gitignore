@@ -4,3 +4,4 @@ client_device_workspace/greengrass_deployment_config.json
 client_device_workspace/greengrass.env
 .DS_Store
 client_device_provisioning/claim
+client_device_provisioning/clients
