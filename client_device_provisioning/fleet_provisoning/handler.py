@@ -168,9 +168,9 @@ class Handler:
         cert_id = payload['certificateId']
         self.new_key_root = cert_id[0:10]
 
-        self.secure_cert_path = os.path.join(os.getcwd(), "clients", self.config.thingName)
+        self.secure_cert_path = os.path.join(os.getcwd(), os.pardir, "clients", self.config.thingName)
         os.makedirs(self.secure_cert_path)
-        self.new_cert_name = '{}-certificate.pem.crt'.format(self.config.thingName)
+        self.new_cert_name = '{}_certificate.pem.crt'.format(self.config.thingName)
         ### Create certificate
         f = open('{}/{}'.format(self.secure_cert_path, self.new_cert_name), 'w+')
         f.write(payload['certificatePem'])
@@ -178,7 +178,7 @@ class Handler:
         
 
         ### Create private key
-        self.new_key_name = '{}-private.pem.key'.format(self.config.thingName)
+        self.new_key_name = '{}_private.pem.key'.format(self.config.thingName)
         f = open('{}/{}'.format(self.secure_cert_path, self.new_key_name), 'w+')
         f.write(payload['privateKey'])
         f.close()
@@ -239,7 +239,9 @@ class Handler:
         print("Connected with Prod certs!")
 
     def basic_callback(self, topic, payload, **kwargs):
-        print("Received message from topic '{}': {}".format(topic, payload))
+        if(topic != '$aws/certificates/create/json/accepted'):
+            print("Received message from topic '{}': {}".format(topic, payload))
+        
         self.message_payload = payload
         self.on_message_callback(payload)
 
@@ -265,7 +267,7 @@ class Handler:
 
         self.test_MQTTClient.publish(
             topic=topic,
-            payload=json.dumps({"service_response": "##### RESPONSE FROM PREVIOUSLY FORBIDDEN TOPIC #####"}),
+            payload=json.dumps({"thing": self.config.thingName,"battery": 90.00, "velocity": 3.12}),
             qos=mqtt.QoS.AT_LEAST_ONCE)
 
 

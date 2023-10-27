@@ -446,12 +446,17 @@ This command should return templateArn and version as follows:
 ```bash
 mkdir client_device_provisioning/claim
 CLAIM_CERTIFICATE=$(aws iot create-keys-and-certificate \
-    --certificate-pem-outfile "client_device_provisioning/claim/certificate.pem" \
-    --public-key-outfile "client_device_provisioning/claim/publicKey.pem" \
-    --private-key-outfile "client_device_provisioning/claim/privateKey.pem" \
+    --certificate-pem-outfile "client_device_provisioning/claim/bootstrap-certificate.pem" \
+    --public-key-outfile "client_device_provisioning/claim/bootstrap-publicKey.pem" \
+    --private-key-outfile "client_device_provisioning/claim/bootstrap-privateKey.pem" \
     --set-as-active)
 CLAIM_CERTIFICATE_ARN=$(echo -E $CLAIM_CERTIFICATE |  jq -r '.certificateArn')
 ```
+
+The above command will generate the claim certiciate and save it into *client_device_provisioning/claim folder*
+
+![claim certificate folder](images/claim_certificate_folder.png)
+
 2. Create an IoT policy and attached it to the claim certificate
 ```bash
 aws iot create-policy \
@@ -463,9 +468,65 @@ aws iot attach-policy \
     --policy-name robot-gg-server-claim-policy
 ```
 
-![template](images/claim-certificate.png)
+![claim certificate](images/claim_certificate_aws.png)
 
 #### Provision the Robot
+The next step will guide you through connecting your device to AWS IoT Core. Previously, a bootstrap certificate was created and saved in the *client_device_provisioning/claim* folder.
+
+fleet_provisoning python module is a fork of [aws-iot-fleet-provisioning](https://github.com/aws-samples/aws-iot-fleet-provisioning) repository that shows how to connect your device to AWS IoT Core.
+
+```bash
+ENDPOINT_ADDRESS=$(aws iot describe-endpoint --endpoint-type iot:Data-ATS --query endpointAddress  --output text)
+
+cd client_device_provisioning/fleet_provisoning
+
+python3 -m pip install --upgrade pip
+pip3 install -r requirements.txt
+
+python3 main.py -e $ENDPOINT_ADDRESS -s Jhwpa54J -n my_ros2_robot_thing_2
+python3 main.py -e $ENDPOINT_ADDRESS -s mYHrTQRM -n my_ros2_robot_thing_3
+python3 main.py -e $ENDPOINT_ADDRESS -s p4R6LgFd -n my_ros2_robot_thing_4
+```
+
+The command above will connect to Iot Core using the claim certificates and the provisioning template, which will create a new IoT thing named with the -n parameter, save the generated certificate to the *client_device_provisioning/clients* folder, and then use the generated certificate to publish a message to the *ros2_mock_telemetry_topic* topic.
+
+```bash
+provisioning device with info a1jqw40dp6c57n-ats.iot.eu-west-1.amazonaws.com robot-gg-server-template p4R6LgFd my_ros2_robot_thing_4 ros2_mock_telemetry_topic ...
+##### CONNECTING WITH PROVISIONING CLAIM CERT #####
+Connecting to a1jqw40dp6c57n-ats.iot.eu-west-1.amazonaws.com with client ID 'my_ros2_robot_thing_4'...
+Connected!
+Subscribing to topic '$aws/provisioning-templates/robot-gg-server-template/provision/json/rejected'...
+Subscribed with 1
+Subscribing to topic '$aws/certificates/create/json/rejected'...
+Subscribed with 1
+Subscribing to topic '$aws/provisioning-templates/robot-gg-server-template/provision/json/accepted'...
+Subscribed with 1
+Subscribing to topic '$aws/certificates/create/json/accepted'...
+Subscribed with 1
+##### SUCCESS. SAVING KEYS TO DEVICE! #####
+##### CREATING THING ACTIVATING CERT #####
+Received message from topic '$aws/provisioning-templates/robot-gg-server-template/provision/json/accepted': b'{"deviceConfiguration":{},"thingName":"my_ros2_robot_thing_4"}'
+##### CERT ACTIVATED AND THING my_ros2_robot_thing_4 CREATED #####
+##### CONNECTING WITH OFFICIAL CERT #####
+##### Connect using /Users/ymaher/projects/aws-iot-greengrass-to-ros2-client-device-connection/client_device_provisioning/fleet_provisoning/../clients/my_ros2_robot_thing_4/my_ros2_robot_thing_4_certificate.pem.crt#####
+##### Connect using /Users/ymaher/projects/aws-iot-greengrass-to-ros2-client-device-connection/client_device_provisioning/fleet_provisoning/../clients/my_ros2_robot_thing_4/my_ros2_robot_thing_4_private.pem.key#####
+Connecting with Prod certs to a1jqw40dp6c57n-ats.iot.eu-west-1.amazonaws.com with client ID 'my_ros2_robot_thing_4'...
+Connected with Prod certs!
+Subscribing to topic 'ros2_mock_telemetry_topic'...
+Subscribed with 1
+##### ACTIVATED AND TESTED CREDENTIALS (my_ros2_robot_thing_4_private.pem.key, my_ros2_robot_thing_4_certificate.pem.crt). #####
+##### FILES SAVED TO /Users/ymaher/projects/aws-iot-greengrass-to-ros2-client-device-connection/client_device_provisioning/fleet_provisoning/../clients/my_ros2_robot_thing_4 #####
+connection interrupted with error AWS_ERROR_MQTT_UNEXPECTED_HANGUP: The connection was closed unexpectedly.
+Received message from topic 'ros2_mock_telemetry_topic': b'{"thing": "my_ros2_robot_thing_4", "battery": 90.0, "velocity": 3.12}'
+Successfully provisioned
+b'{"thing": "my_ros2_robot_thing_4", "battery": 90.0, "velocity": 3.12}'
+```
+All client device certificates are saved in the directory *client_device_provisioning/clients*.
+
+![provisioned clients](images/provisioned_clients.png)
+
+To view the my_ros2_robot_thing_4 IoT thing in the AWS console, navigate to the IoT Core page, as shown below:
+![provisioned clients](images/provisoned_clients_aws_4.png)
 
 #### Connect the Robot to the GG Server
 
