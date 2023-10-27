@@ -429,6 +429,17 @@ aws iot create-provisioning-template \
     --template-body file://client_device_provisioning/gg_server_template.json \
     --enabled
 ```   
+This command should return templateArn and version as follows:
+
+```json
+{
+    "templateArn": "arn:aws:iot:<AWS-REGION>:<AWS-ACCOUNT>:provisioningtemplate/robot-gg-server-template",
+    "templateName": "robot-gg-server-template",
+    "defaultVersionId": 1
+}
+```
+
+![template](images/robot-gg-server-template.png)
 
 #### Create the Claim Certificate
 1. Create a claim certificate and private key to use for the provisioning by claim workflow
@@ -452,9 +463,11 @@ aws iot attach-policy \
     --policy-name robot-gg-server-claim-policy
 ```
 
-#### Provision the Robot
-#### Connect the Robot to the GG Server
+![template](images/claim-certificate.png)
 
+#### Provision the Robot
+
+#### Connect the Robot to the GG Server
 
 ## Conclusion
 

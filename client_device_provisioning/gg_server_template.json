@@ -46,7 +46,7 @@
                 "iot:RetainPublish"
               ],
               "Resource": [
-                "arn:aws:iot:REGION:ACCOUNT_ID:topic/TOPIC"
+                "*"
               ]
             },
             {
@@ -55,7 +55,7 @@
                 "iot:Subscribe"
               ],
               "Resource": [
-                "arn:aws:iot:REGION:ACCOUNT_ID:topicfilter/TOPIC"
+                "*"
               ]
             },
             {
