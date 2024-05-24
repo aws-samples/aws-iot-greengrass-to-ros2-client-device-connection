@@ -30,7 +30,7 @@ To use Docker, follow the installation instructions found [here](https://docs.do
 Docker Compose and `jq` are also used, which can be installed as follows:
 
 ```bash
-sudo apt install -y docker-compose jq
+sudo apt install -y jq
 ```
 
 Clone the repository into the home directory as follows:
@@ -117,7 +117,7 @@ Start Greengrass by itself to provision the Thing and Group, and install the Gre
 
 ```bash
 cd "$REPO/client_device_workspace/"
-docker-compose up greengrass
+docker compose up greengrass
 ```
 
 Wait until the logs show that the Nucleus has started. The logs showing that the Nucleus has started look similar to the following:
@@ -228,13 +228,13 @@ This configuration can now be inserted into the Greengrass deployment configurat
   "aws.greengrass.clientdevices.mqtt.Bridge": {
     "componentVersion": "2.2.4",
     "configurationUpdate": {
-      "merge": "{\"mqttTopicMapping\": {\"ForwardAllMapping\": {\"topic\": \"MY_TOPIC\",\"source\": \"LocalMqtt\",\"target\": \"IotCore\"} } }"
+      "merge": "{\"mqttTopicMapping\": {\"ForwardAllMapping\": {\"topic\": \"MY_TOPIC\",\"source\": \"LocalMqtt\",\"target\": \"IotCore\"}, \"ForwardCmdVel\": {\"topic\": \"cmd_vel\",\"source\": \"LocalMqtt\",\"target\": \"IotCore\"} } }"
     }
   }
 }
 ```
 
-Here, the UNKOWN value of the Client Device Auth component must be updated with the newly created template. In addition, the MQTT Bridge component requires the MY_TOPIC field to be updated with the required topic name. All configurations in the deployment must be valid strings containing escaped JSON. This can be done by hand or by executing the following:
+Here, the UNKOWN value of the Client Device Auth component must be updated with the newly created template. In addition, the MQTT Bridge component requires the MY_TOPIC field to be updated with the required topic name. The cmd_vel topic is required for the O3DE example. All configurations in the deployment must be valid strings containing escaped JSON. This can be done by hand or by executing the following:
 
 ```bash
 export TOPIC_NAME=ros2_mock_telemetry_topic
@@ -350,7 +350,7 @@ This configuration should be enough to run the Docker containers. Execute the fo
 
 ```bash
 cd "$REPO/client_device_workspace"
-docker-compose up
+docker compose up
 ```
 
 A series of log messages should start appearing similar to the following:
@@ -395,6 +395,11 @@ There are also 3 networks:
 2. `aws`: network connecting `greengrass` container to the cloud.
 3. `aws_discover`: network allowing `iot_pub` container to discover Greengrass device. This is
    not required once discovery is complete.
+
+## O3DE Sample
+In this workshop, we will explore the Open 3D Engine (O3DE) , a community-driven, open-source simulator that provides the high-fidelity realistic rendering necessary for robotic simulations. O3DE is a powerful 3D engine capable of creating and running realistic 3D worlds, making it an ideal tool for gaming and robotic applications.
+
+we integrate ROS2 robots as client devices with the AWS Greengrass V2 (GGv2) server. We enhanced the solution to utilize the robot navigation data using O3DE simulation and navigation stack containers as client devices. By leveraging FastDDS as the ROS protocol, the O3DE and navigation containers can publish data that is received by an IoT Publisher component. The centralized GGv2 gateway servers facilitate client device connectivity, authentication, and provide an MQTT broker. This Publisher can then use Greengrass cloud discovery to locate and authenticate with Greengrass, establishing a secure connection to IoT Core. Using RViz, you can control the robot navigation, which will publish constant linear and angular velocity data to the IoT Core via the MQTT broker. Once your data is available on AWS IoT Core, you can leverage this IoT connectivity to unlock various use cases for improving your robotic system. 
 
 ## Conclusion
 
