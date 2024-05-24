@@ -1,0 +1,61 @@
+version: "3.9"
+services:
+  greengrass:
+    build:
+      context: aws-greengrass-docker
+      dockerfile: Dockerfile
+    hostname: greengrass
+    env_file:
+      - greengrass.env
+    volumes:
+      - type: bind
+        source: ./greengrass
+        target: /greengrass
+        volume:
+          nocopy: true
+      - type: bind
+        source: ./greengrass-v2-credentials
+        target: /root/.aws/
+    ports:
+      - "8883:8883"
+  iot_pub:
+    depends_on:
+      - greengrass
+    build:
+      context: client_device
+      dockerfile: Dockerfile
+    volumes:
+      - type: bind
+        source: $CERT_FOLDER_LOCATION
+        target: /workspace/iot_certs_and_config
+    command: ros2 run cmd_vel_republisher republish_cmd_vel --ros-args --param path_for_config:=/workspace/iot_certs_and_config/iot_docker_config.json --param discover_endpoints:=true
+  o3de_pub:
+    image: o3de_robot_vacuum_simulation:latest
+    command: /data/workspace/LaunchSimulation.bash
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      DISPLAY: ${DISPLAY}
+      RMW_IMPLEMENTATION: rmw_fastrtps_cpp
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+  o3de_stack:
+    image: o3de_robot_vacuum_simulation:latest
+    command: /data/workspace/LaunchNavStack.bash
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      DISPLAY: ${DISPLAY}
+      RMW_IMPLEMENTATION: rmw_fastrtps_cpp
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
