@@ -399,7 +399,7 @@ There are also 3 networks:
 ## O3DE Sample
 [Open 3D Engine (O3DE)](https://o3de.org/) is a community-driven, open-source simulator that provides the high-fidelity realistic rendering necessary for robotic simulations. O3DE is a powerful 3D engine capable of creating and running realistic 3D worlds, making it an ideal tool for gaming and robotic applications.
 
-We enhanced previous example to eliminate mock up data generation using real time data generation from robots in the simulation enviornment. We integrate vaccumm robots as client devices with the AWS Greengrass V2 (GGv2) server. By leveraging FastDDS as the ROS protocol, the O3DE and navigation containers can publish data that is received by an IoT Publisher component. Using RViz, you can control the robot navigation, which will publish constant linear and angular velocity data to the IoT Core via the MQTT broker. Once your data is available on AWS IoT Core, you can leverage this IoT connectivity to unlock various use cases for improving your robotic system. 
+We enhanced previous example to eliminate mock up data generation using real time data generation from robots in the simulation enviornment. We integrate vacuum robots as client devices with the AWS Greengrass V2 (GGv2) server. By leveraging FastDDS as the ROS protocol, the O3DE and navigation containers can publish data that is received by an IoT Publisher component. Using RViz, you can control the robot navigation, which will publish constant linear and angular velocity data to the IoT Core via the MQTT broker. Once your data is available on AWS IoT Core, you can leverage this IoT connectivity to unlock various use cases for improving your robotic system. 
 
 1.	Set the workspace folder `$WORKSPACE` to download O3de [Robot Vacuum Sample](https://github.com/o3de/RobotVacuumSample) application.
 
@@ -428,10 +428,10 @@ docker build --build-arg IMAGE_TYPE=simulation -t o3de_robot_vacuum_simulation .
 cd "$REPO/client_device_workspace"
 ```
 
-5. Run all four containers O3DE simulation, O3DE navigation, IoT pub, discovery and IoT greengrass using docker compose.
+5. Run all five containers O3DE simulation, O3DE navigation, IoT pub, discovery and IoT greengrass using docker compose.
 
 ```bash
-docker compose up
+docker compose -f docker-compose.o3de.yml up
 ```
 
 ## Conclusion
