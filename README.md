@@ -397,9 +397,42 @@ There are also 3 networks:
    not required once discovery is complete.
 
 ## O3DE Sample
-Open 3D Engine (O3DE) , a community-driven, open-source simulator that provides the high-fidelity realistic rendering necessary for robotic simulations. O3DE is a powerful 3D engine capable of creating and running realistic 3D worlds, making it an ideal tool for gaming and robotic applications.
+[Open 3D Engine (O3DE)] (https://o3de.org/) is a community-driven, open-source simulator that provides the high-fidelity realistic rendering necessary for robotic simulations. O3DE is a powerful 3D engine capable of creating and running realistic 3D worlds, making it an ideal tool for gaming and robotic applications.
 
-We integrate ROS2 robots as client devices with the AWS Greengrass V2 (GGv2) server. We enhanced the solution to utilize the robot navigation data using O3DE simulation and navigation stack containers as client devices. By leveraging FastDDS as the ROS protocol, the O3DE and navigation containers can publish data that is received by an IoT Publisher component. The centralized GGv2 gateway servers facilitate client device connectivity, authentication, and provide an MQTT broker. This Publisher can then use Greengrass cloud discovery to locate and authenticate with Greengrass, establishing a secure connection to IoT Core. Using RViz, you can control the robot navigation, which will publish constant linear and angular velocity data to the IoT Core via the MQTT broker. Once your data is available on AWS IoT Core, you can leverage this IoT connectivity to unlock various use cases for improving your robotic system. 
+We enhanced previous example to eliminate mock up data generation using real time data generation from robots in the simulation enviornment. We integrate vaccumm robots as client devices with the AWS Greengrass V2 (GGv2) server. By leveraging FastDDS as the ROS protocol, the O3DE and navigation containers can publish data that is received by an IoT Publisher component. Using RViz, you can control the robot navigation, which will publish constant linear and angular velocity data to the IoT Core via the MQTT broker. Once your data is available on AWS IoT Core, you can leverage this IoT connectivity to unlock various use cases for improving your robotic system. 
+
+1.	Set the workspace folder `$WORKSPACE` to download O3de [Robot Vacuum Sample](https://github.com/o3de/RobotVacuumSample) application.
+
+```bash
+export WORKSPACE=$HOME/o3de-sample
+```
+
+2.	Clone the Robot Vacuum Sample example repository.
+
+```bash
+mkdir -p $WORKSPACE
+git clone https://github.com/o3de/RobotVacuumSample $WORKSPACE/RobotVacuumSample
+```
+
+3.	Build the simulation docker image named `o3de_robot_vacuum_simulation`. This step will take approximately 20-30 minutes to build from latest docker image.
+
+
+```bash
+cd $WORKSPACE/RobotVacuumSample/Docker
+docker build --build-arg IMAGE_TYPE=simulation -t o3de_robot_vacuum_simulation .
+```
+
+4. Download the update docker-compose.o3de.yml file from `client_device_workspace` and replace file under `aws-iot-greengrass-to-ros2-client-device-connection/client_device_workspace`. 
+
+```bash
+cd "$REPO/client_device_workspace"
+```
+
+5. Run all four containers O3DE simulation, O3DE navigation, IoT pub, discovery and IoT greengrass using docker compose.
+
+```bash
+docker compose up
+```
 
 ## Conclusion
 
